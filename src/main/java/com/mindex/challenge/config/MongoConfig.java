@@ -2,6 +2,7 @@ package com.mindex.challenge.config;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.dao.ReportingStructureRepository;
+import com.mindex.challenge.dao.CompensationRepository;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -14,7 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@EnableMongoRepositories(basePackageClasses = {EmployeeRepository.class, ReportingStructureRepository.class})
+@EnableMongoRepositories(basePackageClasses = {EmployeeRepository.class, ReportingStructureRepository.class, CompensationRepository.class})
 
 @Configuration
 public class MongoConfig{
