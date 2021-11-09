@@ -4,24 +4,20 @@ public class ReportingStructure{
     private Employee employee;
     private Integer numberOfReports;
 
-    public ReportingStructure() {
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
+    public ReportingStructure(Employee employee) {
         this.employee = employee;
     }
 
+    public Employee getEmployee(){
+        return this.employee;
+    }
+
     public Integer getNumberOfReports() {
-        this.setNumberOfReports();
         return this.numberOfReports;
     }
 
-    public void setNumberOfReports() {
-        this.numberOfReports = this.employee.getDirectReports().size();
+    public void setNumberOfReports(Integer numberOfReports) {
+        this.numberOfReports = numberOfReports;
     }
 
 }

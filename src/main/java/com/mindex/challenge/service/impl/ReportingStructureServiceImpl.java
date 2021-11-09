@@ -17,52 +17,38 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
 
     private static final Logger LOG = LoggerFactory.getLogger(ReportingStructureServiceImpl.class);
 
-    private EmployeeRepository employeeRepository;
-
-    private ReportingStructure reportingStructure;
-    private Employee employee;
-
     @Autowired
-    private ReportingStructureRepository ReportingStructureRepository;
-
-    @Override
-    public ReportingStructure create(String employeeId) {
-        LOG.debug("Creating ReportingStructure for employeeId [{}]", employeeId);
-        
-        employee = employeeRepository.findByEmployeeId(employeeId);
-
-        reportingStructure.setEmployee(employee);
-        reportingStructure.setNumberOfReports();
-
-        ReportingStructureRepository.insert(reportingStructure);
-
-        return reportingStructure;
-    }
+    private ReportingStructureRepository reportingStructureRepository;
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Override
     public ReportingStructure read(String employeeId) {
-        LOG.debug("Creating ReportingStructure with employeeId [{}]", employeeId);
+        LOG.debug("Getting ReportingStructure for employeeId [{}]", employeeId);
 
-        employee = employeeRepository.findByEmployeeId(employeeId);
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
 
-        reportingStructure = ReportingStructureRepository.findByEmployee(employee);
-
-        if (reportingStructure == null) {
-            throw new RuntimeException("Invalid ReportingStructure with EmployeeId: " + employeeId);
+        if (employee == null) {
+            throw new RuntimeException("Invalid employeeId: " + employeeId);
         }
+
+        ReportingStructure reportingStructure = new ReportingStructure(employee);
+        reportingStructure.setNumberOfReports(getNumberOfReports(employee));
 
         return reportingStructure;
     }
 
-    @Override
-    public ReportingStructure update(String employeeId) {
-        LOG.debug("Updating ReportingStructure for employeeId [{}]", employeeId);
-
-        employee = employeeRepository.findByEmployeeId(employeeId);
-
-        reportingStructure = ReportingStructureRepository.findByEmployee(employee);
-        reportingStructure.setNumberOfReports();
-
-        return ReportingStructureRepository.save(reportingStructure);
+    private Integer getNumberOfReports(Employee employee){
+        Integer numberOfReports = 0;
+        if(employee.getDirectReports() != null ){
+            numberOfReports += employee.getDirectReports().size();
+            for (Employee emp : employee.getDirectReports()){
+                LOG.debug(emp.getEmployeeId());
+                emp = employeeRepository.findByEmployeeId(emp.getEmployeeId());
+                numberOfReports += getNumberOfReports(emp);
+            }
+        }
+        return numberOfReports;
     }
 }
